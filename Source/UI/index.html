@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Numberwang Synth</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────────────── -->
+  <header>
+    <div class="banner-title">NUMBERWANG!</div>
+    <div class="banner-sub">SYNTH <span class="version">v1.9.1</span></div>
+  </header>
+
+  <!-- ── SCOREBOARD ─────────────────────────────────────────────── -->
+  <div class="scoreboard">
+    <div class="score-box">
+      <div class="score-label">ROLL</div>
+      <div class="score-value" id="roll">-</div>
+    </div>
+    <div class="score-box">
+      <div class="score-label">NOTE</div>
+      <div class="score-value" id="note">-</div>
+    </div>
+    <div class="score-controls">
+      <button class="toggle" id="numberwang">NUMBERWANG</button>
+      <button class="btn-panic" id="panic-btn">PANIC</button>
+    </div>
+    <div class="score-vol">
+      <label class="ctrl-label">MASTER VOL</label>
+      <input type="range" id="master_volume" min="0" max="1" step="0.001">
+      <span class="val" id="master_volume_val"></span>
+    </div>
+  </div>
+
+  <!-- ── MAIN CONTENT ───────────────────────────────────────────── -->
+  <div class="main">
+
+    <!-- LEFT COLUMN -->
+    <div class="col">
+
+      <section class="section">
+        <div class="section-title">OSCILLATORS</div>
+        <div class="osc-pair">
+
+          <div class="osc">
+            <div class="osc-name">OSC 1</div>
+            <div class="radio-group" id="osc1_wave">
+              <button class="radio" data-index="0">SINE</button>
+              <button class="radio" data-index="1">SQR</button>
+              <button class="radio" data-index="2">TRI</button>
+            </div>
+            <div class="row">
+              <label class="ctrl-label">LEVEL</label>
+              <input type="range" id="osc1_level" min="0" max="1" step="0.001">
+              <span class="val" id="osc1_level_val"></span>
+            </div>
+            <div class="row">
+              <label class="ctrl-label">DETUNE</label>
+              <input type="range" id="osc1_detune" min="0" max="1" step="0.001">
+              <span class="val" id="osc1_detune_val">ct</span>
+            </div>
+            <div class="row">
+              <label class="ctrl-label">OCT</label>
+              <input type="range" id="osc1_octave" min="0" max="1" step="0.001">
+              <span class="val" id="osc1_octave_val"></span>
+            </div>
+          </div>
+
+          <div class="osc">
+            <div class="osc-name">OSC 2</div>
+            <div class="radio-group" id="osc2_wave">
+              <button class="radio" data-index="0">SINE</button>
+              <button class="radio" data-index="1">SQR</button>
+              <button class="radio" data-index="2">TRI</button>
+            </div>
+            <div class="row">
+              <label class="ctrl-label">LEVEL</label>
+              <input type="range" id="osc2_level" min="0" max="1" step="0.001">
+              <span class="val" id="osc2_level_val"></span>
+            </div>
+            <div class="row">
+              <label class="ctrl-label">OCT</label>
+              <input type="range" id="osc2_octave" min="0" max="1" step="0.001">
+              <span class="val" id="osc2_octave_val"></span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">ARPEGGIATOR</div>
+        <div class="row">
+          <button class="toggle" id="arp_enabled">ARP</button>
+          <button class="toggle" id="arp_hold">HOLD</button>
+          <div class="radio-group" id="arp_division">
+            <button class="radio" data-index="0">1/4</button>
+            <button class="radio" data-index="1">1/8</button>
+            <button class="radio" data-index="2">1/16</button>
+            <button class="radio" data-index="3">1/32</button>
+          </div>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">BPM</label>
+          <input type="range" id="arp_bpm" min="0" max="1" step="0.001">
+          <span class="val" id="arp_bpm_val"></span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">NOISE &amp; FILTER</div>
+        <div class="row">
+          <label class="ctrl-label">NOISE</label>
+          <input type="range" id="noise_level" min="0" max="1" step="0.001">
+          <span class="val" id="noise_level_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">CUTOFF</label>
+          <input type="range" id="filter_cutoff" min="0" max="1" step="0.001">
+          <span class="val" id="filter_cutoff_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">RES</label>
+          <input type="range" id="filter_res" min="0" max="1" step="0.001">
+          <span class="val" id="filter_res_val"></span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">FILTER MOD</div>
+        <div class="row">
+          <label class="ctrl-label">ENV ATK</label>
+          <input type="range" id="filter_env_attack" min="0" max="1" step="0.001">
+          <span class="val" id="filter_env_attack_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">ENV AMT</label>
+          <input type="range" id="filter_env_amount" min="0" max="1" step="0.001">
+          <span class="val" id="filter_env_amount_val"></span>
+        </div>
+        <div class="row">
+          <button class="toggle" id="filter_lfo_sync">SYNC</button>
+          <div class="radio-group" id="filter_lfo_div">
+            <button class="radio" data-index="0">1/16</button>
+            <button class="radio" data-index="1">1/8</button>
+            <button class="radio" data-index="2">1/4</button>
+            <button class="radio" data-index="3">1/2</button>
+            <button class="radio" data-index="4">1 BAR</button>
+          </div>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">LFO RATE</label>
+          <input type="range" id="filter_lfo_rate" min="0" max="1" step="0.001">
+          <span class="val" id="filter_lfo_rate_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">LFO AMT</label>
+          <input type="range" id="filter_lfo_amount" min="0" max="1" step="0.001">
+          <span class="val" id="filter_lfo_amount_val"></span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">ENVELOPE</div>
+        <div class="adsr">
+          <div class="adsr-knob">
+            <label class="ctrl-label">ATTACK</label>
+            <input type="range" id="attack" min="0" max="1" step="0.001">
+            <span class="val" id="attack_val"></span>
+          </div>
+          <div class="adsr-knob">
+            <label class="ctrl-label">DECAY</label>
+            <input type="range" id="decay" min="0" max="1" step="0.001">
+            <span class="val" id="decay_val"></span>
+          </div>
+          <div class="adsr-knob">
+            <label class="ctrl-label">SUSTAIN</label>
+            <input type="range" id="sustain" min="0" max="1" step="0.001">
+            <span class="val" id="sustain_val"></span>
+          </div>
+          <div class="adsr-knob">
+            <label class="ctrl-label">RELEASE</label>
+            <input type="range" id="release" min="0" max="1" step="0.001">
+            <span class="val" id="release_val"></span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col">
+
+      <section class="section">
+        <div class="section-title">SUPER SAW</div>
+        <div class="row"><button class="toggle" id="ssaw_enabled">ON</button></div>
+        <div class="row">
+          <label class="ctrl-label">OCT</label>
+          <input type="range" id="ssaw_octave" min="0" max="1" step="0.001">
+          <span class="val" id="ssaw_octave_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">LEVEL</label>
+          <input type="range" id="ssaw_level" min="0" max="1" step="0.001">
+          <span class="val" id="ssaw_level_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">DETUNE</label>
+          <input type="range" id="ssaw_detune" min="0" max="1" step="0.001">
+          <span class="val" id="ssaw_detune_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">SPREAD</label>
+          <input type="range" id="ssaw_spread" min="0" max="1" step="0.001">
+          <span class="val" id="ssaw_spread_val"></span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">STEREO WIDTH</div>
+        <div class="row"><button class="toggle" id="width_enabled">ON</button></div>
+        <div class="row">
+          <label class="ctrl-label">WIDTH</label>
+          <input type="range" id="width_amount" min="0" max="1" step="0.001">
+          <span class="val" id="width_amount_val"></span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">CHORUS</div>
+        <div class="row"><button class="toggle" id="chorus_enabled">ON</button></div>
+        <div class="row">
+          <label class="ctrl-label">RATE</label>
+          <input type="range" id="chorus_rate" min="0" max="1" step="0.001">
+          <span class="val" id="chorus_rate_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">DEPTH</label>
+          <input type="range" id="chorus_depth" min="0" max="1" step="0.001">
+          <span class="val" id="chorus_depth_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">MIX</label>
+          <input type="range" id="chorus_mix" min="0" max="1" step="0.001">
+          <span class="val" id="chorus_mix_val"></span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">DELAY</div>
+        <div class="row"><button class="toggle" id="delay_enabled">ON</button></div>
+        <div class="row">
+          <label class="ctrl-label">TIME</label>
+          <input type="range" id="delay_time" min="0" max="1" step="0.001">
+          <span class="val" id="delay_time_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">FDBK</label>
+          <input type="range" id="delay_feedback" min="0" max="1" step="0.001">
+          <span class="val" id="delay_feedback_val"></span>
+        </div>
+        <div class="row">
+          <label class="ctrl-label">MIX</label>
+          <input type="range" id="delay_mix" min="0" max="1" step="0.001">
+          <span class="val" id="delay_mix_val"></span>
+        </div>
+      </section>
+
+      <!-- Octave shift bar -->
+      <section class="section">
+        <div class="section-title">KEYBOARD OCTAVE</div>
+        <div class="row oct-bar">
+          <button class="oct-btn" id="oct-down">OCT -</button>
+          <span class="oct-display" id="oct-display">4</span>
+          <button class="oct-btn" id="oct-up">OCT +</button>
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+
+  <!-- Numberwang flash overlay -->
+  <div id="nw-flash" class="nw-flash hidden">NUMBERWANG!</div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
