@@ -17,12 +17,12 @@ struct NWBrowser : juce::WebBrowserComponent
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-class StereoWidenerAudioProcessorEditor : public juce::AudioProcessorEditor,
+class NumberwangAudioProcessorEditor : public juce::AudioProcessorEditor,
                                           private juce::Timer
 {
 public:
-    explicit StereoWidenerAudioProcessorEditor (StereoWidenerAudioProcessor&);
-    ~StereoWidenerAudioProcessorEditor() override;
+    explicit NumberwangAudioProcessorEditor (NumberwangAudioProcessor&);
+    ~NumberwangAudioProcessorEditor() override;
 
     void paint   (juce::Graphics&) override;
     void resized () override;
@@ -31,7 +31,7 @@ private:
     void timerCallback() override;
     std::optional<juce::WebBrowserComponent::Resource> getResource (const juce::String& url);
 
-    static juce::WebBrowserComponent::Options buildOptions (StereoWidenerAudioProcessorEditor* ed,
+    static juce::WebBrowserComponent::Options buildOptions (NumberwangAudioProcessorEditor* ed,
         juce::WebSliderRelay& osc1LevelRelay, juce::WebSliderRelay& osc1DetuneRelay,
         juce::WebSliderRelay& osc1OctaveRelay, juce::WebSliderRelay& osc2LevelRelay,
         juce::WebSliderRelay& osc2OctaveRelay, juce::WebSliderRelay& noiseLevelRelay,
@@ -54,7 +54,7 @@ private:
         juce::WebComboBoxRelay& osc2WaveRelay, juce::WebComboBoxRelay& arpDivisionRelay,
         juce::WebComboBoxRelay& filterLfoDivRelay);
 
-    StereoWidenerAudioProcessor& audioProcessor;
+    NumberwangAudioProcessor& audioProcessor;
     int keyboardOctave = 4;
 
     // ── Slider relays ──────────────────────────────────────────────────────────
@@ -142,5 +142,5 @@ private:
 
     bool lastNwFlag = false;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StereoWidenerAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NumberwangAudioProcessorEditor)
 };

@@ -3,11 +3,11 @@
 #include <JuceHeader.h>
 #include "SynthVoice.h"
 
-class StereoWidenerAudioProcessor : public juce::AudioProcessor
+class NumberwangAudioProcessor : public juce::AudioProcessor
 {
 public:
-    StereoWidenerAudioProcessor();
-    ~StereoWidenerAudioProcessor() override;
+    NumberwangAudioProcessor();
+    ~NumberwangAudioProcessor() override;
 
     void prepareToPlay  (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -102,5 +102,5 @@ private:
     void applyChorus  (juce::AudioBuffer<float>&, float rate, float depth, float mix);
     void applyDelay   (juce::AudioBuffer<float>&, float timeSecs, float feedback, float mix);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StereoWidenerAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NumberwangAudioProcessor)
 };

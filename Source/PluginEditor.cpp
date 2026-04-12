@@ -25,17 +25,38 @@ static const UIFile uiFiles[] =
 };
 
 std::optional<juce::WebBrowserComponent::Resource>
-StereoWidenerAudioProcessorEditor::getResource (const juce::String& url)
+NumberwangAudioProcessorEditor::getResource (const juce::String& url)
 {
     const auto file = (url == "/" || url.isEmpty())
                         ? juce::String ("index.html")
                         : url.fromFirstOccurrenceOf ("/", false, false);
 
+    const auto ext = file.fromLastOccurrenceOf (".", false, false);
+
+#ifdef NUMBERWANG_DEV_UI
+    // Dev mode: serve directly from Source/UI/ on disk so HTML/CSS/JS changes
+    // are visible after a standalone relaunch with no rebuild required.
+    // __FILE__ resolves to the absolute path of this .cpp file at compile time.
+    static const juce::File devDir = juce::File (__FILE__).getSiblingFile ("UI");
+    const auto diskFile = devDir.getChildFile (file);
+    if (diskFile.existsAsFile())
+    {
+        juce::MemoryBlock mb;
+        diskFile.loadFileAsData (mb);
+        return juce::WebBrowserComponent::Resource {
+            std::vector<std::byte> (
+                static_cast<const std::byte*> (mb.getData()),
+                static_cast<const std::byte*> (mb.getData()) + mb.getSize()),
+            mimeFor (ext)
+        };
+    }
+    // Fall through to BinaryData for assets not in Source/UI/ (e.g. the font)
+#endif
+
     for (const auto& f : uiFiles)
     {
         if (file == f.path)
         {
-            const auto ext  = file.fromLastOccurrenceOf (".", false, false);
             std::vector<std::byte> data ((size_t) f.size);
             std::memcpy (data.data(), f.data, (size_t) f.size);
             return juce::WebBrowserComponent::Resource { std::move (data), mimeFor (ext) };
@@ -48,7 +69,7 @@ StereoWidenerAudioProcessorEditor::getResource (const juce::String& url)
 // ── Build the WebBrowserComponent Options ─────────────────────────────────────
 // (returns by value so it can be used in the member initialiser list)
 
-juce::WebBrowserComponent::Options StereoWidenerAudioProcessorEditor::buildOptions (StereoWidenerAudioProcessorEditor* ed,
+juce::WebBrowserComponent::Options NumberwangAudioProcessorEditor::buildOptions (NumberwangAudioProcessorEditor* ed,
                                                          juce::WebSliderRelay& osc1LevelRelay,
                                                          juce::WebSliderRelay& osc1DetuneRelay,
                                                          juce::WebSliderRelay& osc1OctaveRelay,
@@ -155,6 +176,25 @@ juce::WebBrowserComponent::Options StereoWidenerAudioProcessorEditor::buildOptio
             ed->keyboardComp.setKeyPressBaseOctave (ed->keyboardOctave);
             complete (juce::var (ed->keyboardOctave));
         })
+        .withNativeFunction ("noteOn", [ed] (const auto& args, auto complete)
+        {
+            if (args.size() >= 1)
+            {
+                const int note = juce::jlimit (0, 127, (int) args[0]);
+                const float vel = args.size() >= 2 ? juce::jlimit (0.0f, 1.0f, (float) args[1]) : 0.8f;
+                ed->audioProcessor.keyboardState.noteOn (1, note, vel);
+            }
+            complete (juce::var{});
+        })
+        .withNativeFunction ("noteOff", [ed] (const auto& args, auto complete)
+        {
+            if (!args.isEmpty())
+            {
+                const int note = juce::jlimit (0, 127, (int) args[0]);
+                ed->audioProcessor.keyboardState.noteOff (1, note, 0.0f);
+            }
+            complete (juce::var{});
+        })
         // ── Resource provider (serves HTML/CSS/JS from binary data)
         .withResourceProvider ([ed] (const auto& url)
         {
@@ -164,7 +204,7 @@ juce::WebBrowserComponent::Options StereoWidenerAudioProcessorEditor::buildOptio
 
 // ── Constructor ───────────────────────────────────────────────────────────────
 
-StereoWidenerAudioProcessorEditor::StereoWidenerAudioProcessorEditor (StereoWidenerAudioProcessor& p)
+NumberwangAudioProcessorEditor::NumberwangAudioProcessorEditor (NumberwangAudioProcessor& p)
     : AudioProcessorEditor (&p),
       audioProcessor (p),
       // ── WebView built with all relays wired
@@ -252,18 +292,18 @@ StereoWidenerAudioProcessorEditor::StereoWidenerAudioProcessorEditor (StereoWide
     keyboardComp.addMouseListener (&keyboardFocusGrabber, false);
     keyboardComp.grabKeyboardFocus();
 
-    setSize (960, 840);
+    setSize (1200, 840);
     startTimerHz (30);
 }
 
-StereoWidenerAudioProcessorEditor::~StereoWidenerAudioProcessorEditor()
+NumberwangAudioProcessorEditor::~NumberwangAudioProcessorEditor()
 {
     stopTimer();
 }
 
 // ── Timer: push numberwang display state to JS ────────────────────────────────
 
-void StereoWidenerAudioProcessorEditor::timerCallback()
+void NumberwangAudioProcessorEditor::timerCallback()
 {
     const bool fired = audioProcessor.numberwangFlag.exchange (false);
 
@@ -277,12 +317,12 @@ void StereoWidenerAudioProcessorEditor::timerCallback()
 
 // ── Paint / Resized ───────────────────────────────────────────────────────────
 
-void StereoWidenerAudioProcessorEditor::paint (juce::Graphics& g)
+void NumberwangAudioProcessorEditor::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colour (0xff001166));
 }
 
-void StereoWidenerAudioProcessorEditor::resized()
+void NumberwangAudioProcessorEditor::resized()
 {
     const int keyH = 48;
     webComponent .setBounds (0, 0,          getWidth(), getHeight() - keyH);

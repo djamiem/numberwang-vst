@@ -1,127 +1,168 @@
 /*
   ============================================================
-  NUMBERWANG SYNTH — UI Stylesheet
-  ============================================================
-
-  DESIGNER GUIDE
-  --------------
-  All colors, font sizes, and spacing live as CSS custom
-  properties at the top of this file (inside :root {}).
-  Change those values to restyle the whole plugin at once.
-
-  Section-by-section comments explain what each block controls.
-  The layout uses CSS Grid and Flexbox — no external framework.
+  NUMBERWANG PRO — UI Stylesheet
+  Post-modern treatment of the classic blue/gold palette.
+  Brutalist geometry, editorial type, inverted ENVELOPE panel.
   ============================================================
 */
 
-/* ── CUSTOM PROPERTIES (change these to restyle everything) ── */
-:root {
-  --gold:       #ffd700;   /* primary accent: borders, active states, text */
-  --dark-blue:  #001166;   /* panel and button backgrounds */
-  --mid-blue:   #0033aa;   /* page background */
-  --light-blue: #1a3acc;   /* section card background */
-  --white:      #ffffff;
-  --danger:     #cc2200;   /* panic button */
-
-  --font-main:  'BebasNeue', sans-serif;
-  --font-mono:  'Courier New', monospace;   /* value readouts */
-
-  --banner-height:     68px;
-  --scoreboard-height: 80px;
-  --row-height:        26px;
-  --section-gap:       8px;
-  --section-pad:       8px 10px;
-
-  --label-width:  56px;
-  --val-width:    52px;
-  --toggle-h:     22px;
-  --toggle-min-w: 42px;
-}
-
-/* ── FONT FACE ───────────────────────────────────────────── */
 @font-face {
   font-family: 'BebasNeue';
   src: url('BebasNeue-Regular.ttf') format('truetype');
 }
 
-/* ── RESET / BASE ───────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ── TOKENS ──────────────────────────────────────────────── */
+:root {
+  /* Core palette */
+  --gold:       #ffd700;
+  --dark-blue:  #001166;
+  --mid-blue:   #0033aa;
+  --light-blue: #1a3acc;
+  --white:      #ffffff;
+  /*
+    Danger: changed from #cc2200 (red) to #ff8c00 (orange).
+    Red is near-invisible for protanopes (~1% of males) and very dim for
+    deuteranopes (~8% of males). Orange retains a strong luminance signal
+    visible to all color-blind types while still reading as "alert".
+  */
+  --danger:     #ff8c00;
+
+  /* Derived — gold-dim raised to 0.55 so borders are visible without
+     relying on hue discrimination */
+  --gold-dim:   rgba(255,215,0,0.55);
+  --gold-faint: rgba(255,215,0,0.16);
+  --gold-bg:    #ffe100;
+
+  /* UI font: Avenir Next is a refined geometric sans on every Mac;
+     banner title keeps BebasNeue via an explicit override below */
+  --font:  "Avenir Next", "Avenir", "Gill Sans", "Helvetica Neue", Helvetica, sans-serif;
+  --mono:  "Menlo", "SF Mono", "Courier New", monospace;
+
+  /* Accessibility: raise dim-text opacities */
+  --gold-dim:   rgba(255,215,0,0.65);   /* was 0.55 */
+  --gold-faint: rgba(255,215,0,0.22);   /* was 0.16 */
+
+  /* Layout */
+  --banner-h:      56px;
+  --scoreboard-h:  108px;  /* tall enough for vol knob + oct controls */
+  --section-gap:   5px;
+  --section-pad:   8px 12px;
+  --row-h:         32px;   /* was 30 — larger tap targets */
+  --track-h:        6px;   /* was 5 */
+  --thumb-sz:      21px;   /* was 19 */
+  --label-w:       70px;   /* was 66 */
+  --val-w:         64px;   /* was 58 */
+  --toggle-h:      28px;   /* was 24 */
+  --toggle-minw:   46px;   /* was 42 */
 }
+
+/* ── RESET ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   width: 100%;
   height: 100%;
-  overflow: hidden;   /* the window is fixed-size; no scrollbar */
-  background: var(--mid-blue);
+  overflow: hidden;
+  background: var(--dark-blue);
+  /* subtle diagonal crosshatch — post-modern texture */
+  background-image:
+    repeating-linear-gradient(
+      -50deg,
+      transparent 0px 22px,
+      rgba(255,215,0,0.018) 22px 23px
+    );
   color: var(--gold);
-  font-family: var(--font-main);
-  font-size: 14px;
+  font-family: var(--font);
+  font-size: 15px;
   user-select: none;
 }
 
-/* ── HEADER / BANNER ────────────────────────────────────── */
+/* ── HEADER ─────────────────────────────────────────────── */
 header {
-  height: var(--banner-height);
+  height: var(--banner-h);
   background: var(--dark-blue);
-  border-bottom: 3px solid var(--gold);
+  border-bottom: 4px solid var(--gold);
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
 }
 
-.banner-title {
-  font-size: 40px;
-  color: var(--gold);
-  letter-spacing: 2px;
-}
-
-.banner-sub {
-  font-size: 16px;
-  color: var(--white);
-  letter-spacing: 4px;
-  margin-top: 2px;
-}
-
-.version {
-  opacity: 0.5;
-  font-size: 13px;
-}
-
-/* ── SCOREBOARD ─────────────────────────────────────────── */
-.scoreboard {
-  height: var(--scoreboard-height);
-  background: var(--dark-blue);
-  border-bottom: 2px solid var(--gold);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 12px;
-}
-
-.score-box {
-  width: 80px;
-  border: 2px solid var(--gold);
-  border-radius: 4px;
-  padding: 2px 0;
-  text-align: center;
+/* Vertical gold bar — post-modern geometric accent */
+header::before {
+  content: '';
+  width: 6px;
+  background: var(--gold);
   flex-shrink: 0;
 }
 
-.score-label {
-  font-size: 11px;
+.banner-title {
+  font-family: 'BebasNeue', sans-serif; /* keep the display face for brand impact */
+  font-size: 44px;
   color: var(--gold);
-  opacity: 0.7;
+  letter-spacing: 1px;
+  line-height: 1;
+  align-self: center;
+  padding-left: 12px;
+  flex: 1;
+}
+
+.banner-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  opacity: 0.80;
+  text-transform: uppercase;
+  align-self: flex-end;
+  padding: 0 14px 10px 0;
+}
+
+.version { opacity: 0.7; }
+
+/* ── SCOREBOARD ─────────────────────────────────────────── */
+.scoreboard {
+  height: var(--scoreboard-h);
+  background: var(--dark-blue);
+  border-bottom: 2px solid var(--gold-dim);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+}
+
+.score-box {
+  width: 70px;
+  flex-shrink: 0;
+  text-align: center;
+  border: 1px solid var(--gold-dim);
+  padding: 2px 4px 1px;
+  position: relative;
+}
+
+/* Gold top-bar on score boxes — editorial rule */
+.score-box::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px;
+  height: 3px;
+  background: var(--gold);
+}
+
+.score-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  opacity: 0.88;
+  text-transform: uppercase;
 }
 
 .score-value {
-  font-size: 34px;
+  font-size: 40px;
   color: var(--gold);
   line-height: 1;
+  letter-spacing: -1px;
 }
 
 .score-controls {
@@ -132,38 +173,111 @@ header {
 }
 
 .btn-panic {
-  background: var(--danger);
-  color: var(--white);
-  border: 1px solid #ff4422;
-  border-radius: 4px;
-  font-family: var(--font-main);
+  background: transparent;
+  color: var(--danger);
+  border: 2px solid var(--danger);
+  border-radius: 0;
+  font-family: var(--font);
   font-size: 14px;
+  letter-spacing: 2px;
   cursor: pointer;
   height: var(--toggle-h);
   padding: 0 10px;
-  letter-spacing: 1px;
+  transition: background 0.08s, color 0.08s;
 }
-
-.btn-panic:hover { background: #ee3311; }
+.btn-panic:hover { background: var(--danger); color: var(--dark-blue); }
 
 .score-vol {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex: 1;
 }
 
-/* ── MAIN GRID (two columns) ────────────────────────────── */
-/*
-  Change --col-gap or --col-ratio to adjust the two-column layout.
-  The window is 960px wide. Each column fills roughly half.
-*/
+.score-vol .ctrl-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  opacity: 0.72;
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* ── SCOREBOARD RIGHT (vol knob + oct) ───────────────── */
+.score-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.score-knob-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.knob-svg--xs { width: 44px; height: 44px; }
+
+.score-oct {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.score-oct-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  opacity: 0.88;
+}
+
+.score-oct-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.oct-btn-sm {
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  background: var(--dark-blue);
+  color: var(--gold);
+  border: 1.5px solid var(--gold-dim);
+  border-radius: 0;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: border-color 0.08s, opacity 0.08s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.oct-btn-sm:hover { border-color: var(--gold); opacity: 1; }
+
+.oct-display-sm {
+  font-size: 22px;
+  color: var(--gold);
+  min-width: 24px;
+  text-align: center;
+  line-height: 1;
+}
+
+/* ── MAIN GRID ───────────────────────────────────────────── */
 .main {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: var(--section-gap);
   padding: var(--section-gap);
-  height: calc(100vh - var(--banner-height) - var(--scoreboard-height));
+  height: calc(100vh - var(--banner-h) - var(--scoreboard-h));
   overflow: hidden;
 }
 
@@ -174,71 +288,166 @@ header {
   overflow: hidden;
 }
 
-/* ── SECTIONS ───────────────────────────────────────────── */
-/*
-  Each section is a card with a gold top-border header.
-  Change --light-blue to adjust panel background.
-  The section-title bar can be restyled by editing .section-title.
-*/
+/* ── SECTIONS ────────────────────────────────────────────── */
 .section {
   background: var(--light-blue);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  border-radius: 4px;
+  border: 1px solid var(--gold-faint);
+  border-left: 3px solid var(--gold-dim);
+  border-radius: 0;   /* post-modern: no rounding */
   padding: var(--section-pad);
   flex-shrink: 0;
+  position: relative;
 }
 
 .section-title {
-  font-size: 11px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
   color: var(--gold);
-  opacity: 0.6;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-  border-bottom: 1px solid rgba(255,215,0,0.2);
-  padding-bottom: 3px;
+  opacity: 0.92;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--gold-dim);
 }
 
-/* ── ROWS (label + slider + value) ─────────────────────── */
+/* ── GROW: fills remaining column space ──────────────── */
+.section--grow {
+  flex-grow: 1;
+}
+
+/* ── ADSR ROTARY KNOBS — single horizontal row ───────── */
+.adsr-knobs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding-top: 4px;
+  justify-items: center;
+}
+
+/* Shrink knobs inside the ADSR row so all 4 fit side-by-side */
+.adsr-knobs .knob-svg { width: 62px; height: 62px; }
+
+/* Super Saw knobs match ADSR size */
+.ssaw-header .knob-svg { width: 62px; height: 62px; }
+
+.knob-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.knob-input {
+  display: none;
+}
+
+.knob-svg {
+  width: 84px;
+  height: 84px;
+  cursor: ns-resize;
+  touch-action: none;
+  flex-shrink: 0;
+}
+
+.knob-track-path {
+  fill: none;
+  stroke: var(--mid-blue);
+  stroke-width: 4;
+  stroke-linecap: butt;
+}
+
+.knob-fill-path {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 4;
+  stroke-linecap: butt;
+}
+
+.knob-body {
+  fill: var(--dark-blue);
+  stroke: var(--gold-dim);
+  stroke-width: 1.5;
+}
+
+.knob-ptr {
+  stroke: var(--gold);
+  stroke-width: 2.5;
+  stroke-linecap: square;
+}
+
+.knob-lbl {
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--gold);
+  opacity: 0.90;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.knob-val {
+  width: auto;
+  text-align: center;
+  font-size: 12px;
+  font-family: var(--mono);
+}
+
+/* ── FILTER KNOBS (side-by-side, 60/40 size ratio) ──────── */
+.filter-knobs {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+  justify-content: center;
+}
+
+/* Large knob: 60% proportion */
+.knob-svg--lg { width: 76px; height: 76px; }
+
+/* Small knob: 40% proportion (relative to large) */
+.knob-svg--sm { width: 50px; height: 50px; }
+
+/* ── ROWS ────────────────────────────────────────────────── */
 .row {
   display: flex;
   align-items: center;
-  height: var(--row-height);
-  gap: 6px;
-  margin-bottom: 2px;
+  height: var(--row-h);
+  gap: 8px;
+  margin-bottom: 1px;
 }
 
 .ctrl-label {
-  font-family: var(--font-main);
-  font-size: 13px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0px;
   color: var(--gold);
-  opacity: 0.8;
-  width: var(--label-width);
+  opacity: 0.90;
+  width: var(--label-w);
   flex-shrink: 0;
-  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .val {
-  font-family: var(--font-mono);
-  font-size: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
   color: var(--gold);
-  opacity: 0.7;
-  width: var(--val-width);
+  opacity: 0.90;
+  width: var(--val-w);
   flex-shrink: 0;
   text-align: right;
 }
 
-/* ── RANGE SLIDERS ──────────────────────────────────────── */
-/*
-  To change slider color or size, edit the rules below.
-  The thumb is --gold; the track is dark-blue with a gold fill trick.
-*/
+/* ── RANGE SLIDERS ───────────────────────────────────────── */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   flex: 1;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--dark-blue);
+  height: var(--track-h);
+  border-radius: 0;
+  background: var(--mid-blue);
   outline: none;
   cursor: pointer;
 }
@@ -246,174 +455,176 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 14px;
-  height: 14px;
+  width: var(--thumb-sz);
+  height: var(--thumb-sz);
   border-radius: 50%;
   background: var(--gold);
   cursor: pointer;
   border: 2px solid var(--dark-blue);
-  box-shadow: 0 0 4px rgba(255,215,0,0.5);
+  box-shadow: 0 0 6px rgba(255,215,0,0.5);
+  transition: transform 0.07s;
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.15);
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 2px;
+  height: var(--track-h);
+  border-radius: 0;
   background: linear-gradient(
     to right,
     var(--gold) 0%,
     var(--gold) calc(var(--thumb-pct, 50%) * 1%),
-    var(--dark-blue) calc(var(--thumb-pct, 50%) * 1%),
-    var(--dark-blue) 100%
+    var(--mid-blue) calc(var(--thumb-pct, 50%) * 1%),
+    var(--mid-blue) 100%
   );
 }
 
-/* ── TOGGLE BUTTONS ─────────────────────────────────────── */
-/*
-  Toggles are gold-bordered buttons.
-  Active (on) state = gold fill + dark text.
-  Inactive (off) state = dark fill + gold text.
-*/
+/* ── SUPER SAW header row: ON button + level knob side by side ── */
+.ssaw-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+/* ── TOGGLE BUTTONS ──────────────────────────────────────── */
 .toggle {
-  font-family: var(--font-main);
+  font-family: var(--font);
   font-size: 13px;
-  letter-spacing: 1px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   height: var(--toggle-h);
-  min-width: var(--toggle-min-w);
-  padding: 0 8px;
-  border: 1.5px solid var(--gold);
-  border-radius: 3px;
+  min-width: var(--toggle-minw);
+  padding: 0 10px;
+  border: 1.5px solid var(--gold-dim);
+  border-radius: 0;
   background: var(--dark-blue);
   color: var(--gold);
+  opacity: 0.85;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.1s, color 0.1s;
+  transition: background 0.08s, color 0.08s, border-color 0.08s, opacity 0.08s;
 }
 
 .toggle.active {
   background: var(--gold);
   color: var(--dark-blue);
+  border-color: var(--gold);
+  opacity: 1;
 }
 
-.toggle:hover { opacity: 0.85; }
-
-/* ── RADIO BUTTON GROUPS ────────────────────────────────── */
-/*
-  Radio groups (wave selector, arp division, LFO div) use
-  the same gold/dark styling as toggles. Active = gold fill.
-*/
-.radio-group {
-  display: flex;
-  gap: 3px;
+.toggle:hover:not(.active) {
+  border-color: var(--gold);
+  opacity: 1;
 }
+
+/* ── RADIO GROUPS ────────────────────────────────────────── */
+.radio-group { display: flex; gap: 2px; }
 
 .radio {
-  font-family: var(--font-main);
+  font-family: var(--font);
   font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
   height: var(--toggle-h);
-  min-width: 32px;
+  min-width: 30px;
   padding: 0 5px;
-  border: 1.5px solid var(--gold);
-  border-radius: 3px;
+  border: 1.5px solid var(--gold-dim);
+  border-radius: 0;
   background: var(--dark-blue);
   color: var(--gold);
+  opacity: 0.80;
   cursor: pointer;
   flex-shrink: 0;
-  letter-spacing: 0.5px;
+  transition: background 0.08s, color 0.08s, border-color 0.08s, opacity 0.08s;
 }
 
 .radio.active {
   background: var(--gold);
   color: var(--dark-blue);
+  border-color: var(--gold);
+  opacity: 1;
 }
 
-/* ── OSC PAIR LAYOUT ────────────────────────────────────── */
+.radio:hover:not(.active) {
+  border-color: var(--gold);
+  opacity: 1;
+}
+
+/* ── OSC PAIR — stacked ──────────────────────────────────── */
 .osc-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Divider between OSC 1 and OSC 2 */
+.osc + .osc {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--gold-dim);
 }
 
 .osc-name {
-  font-size: 13px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
   color: var(--gold);
-  margin-bottom: 4px;
+  opacity: 0.90;
+  text-transform: uppercase;
+  margin-bottom: 5px;
 }
 
-/* ── ADSR ROW LAYOUT ────────────────────────────────────── */
-.adsr {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 4px;
-}
-
-.adsr-knob {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.adsr-knob .ctrl-label {
-  width: auto;
-  font-size: 11px;
-  text-align: center;
-}
-
-.adsr-knob .val {
-  width: auto;
-  font-size: 9px;
-  text-align: center;
-}
-
-/* ── OCTAVE BAR ─────────────────────────────────────────── */
-.oct-bar {
-  justify-content: center;
-  gap: 12px;
-}
+/* ── OCTAVE BAR ──────────────────────────────────────────── */
+.oct-bar { justify-content: center; gap: 12px; }
 
 .oct-btn {
-  font-family: var(--font-main);
-  font-size: 15px;
-  padding: 2px 12px;
+  font-family: var(--font);
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 3px 16px;
   background: var(--dark-blue);
   color: var(--gold);
-  border: 1.5px solid var(--gold);
-  border-radius: 3px;
+  border: 1.5px solid var(--gold-dim);
+  border-radius: 0;
   cursor: pointer;
+  opacity: 0.85;
+  transition: border-color 0.08s, opacity 0.08s;
 }
 
-.oct-btn:hover { background: rgba(255,215,0,0.15); }
+.oct-btn:hover { border-color: var(--gold); opacity: 1; }
 
 .oct-display {
-  font-size: 20px;
+  font-size: 30px;
   color: var(--gold);
-  min-width: 40px;
+  min-width: 36px;
   text-align: center;
+  line-height: 1;
 }
 
-/* ── NUMBERWANG FLASH OVERLAY ───────────────────────────── */
-/*
-  The flash overlay appears for ~500ms when NUMBERWANG fires.
-  Edit the animation duration, font size, or color here.
-*/
+/* ── NUMBERWANG FLASH ────────────────────────────────────── */
 .nw-flash {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 72px;
-  color: var(--white);
+  font-size: 100px;
+  letter-spacing: -2px;
+  color: var(--dark-blue);
   pointer-events: none;
   z-index: 100;
-  animation: nw-spin 0.5s ease-out forwards;
+  animation: nw-burst 0.52s ease-out forwards;
 }
 
 .nw-flash.hidden { display: none; }
 
-@keyframes nw-spin {
-  0%   { transform: scale(0.05) rotate(360deg); opacity: 0; background: rgba(0,0,0,0); }
-  40%  { transform: scale(1.5)  rotate(0deg);   opacity: 1; background: rgba(120,0,200,0.25); }
-  65%  { transform: scale(1.5)  rotate(0deg);   opacity: 1; background: rgba(200,100,0,0.25); }
-  100% { transform: scale(1.0)  rotate(0deg);   opacity: 0; background: rgba(0,0,0,0); }
+@keyframes nw-burst {
+  0%   { transform: scale(0.08) rotate(-4deg); opacity: 0;  background: transparent; }
+  25%  { transform: scale(1.08) rotate(0deg);  opacity: 1;  background: var(--gold); }
+  60%  { transform: scale(1.0)  rotate(0deg);  opacity: 1;  background: var(--gold); }
+  100% { transform: scale(1.15) rotate(1.5deg); opacity: 0; background: var(--gold); }
 }

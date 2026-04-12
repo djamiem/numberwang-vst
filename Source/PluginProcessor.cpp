@@ -2,7 +2,7 @@
 #include "PluginEditor.h"
 
 juce::AudioProcessorValueTreeState::ParameterLayout
-StereoWidenerAudioProcessor::createParameterLayout()
+NumberwangAudioProcessor::createParameterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
@@ -151,7 +151,7 @@ StereoWidenerAudioProcessor::createParameterLayout()
     return layout;
 }
 
-StereoWidenerAudioProcessor::StereoWidenerAudioProcessor()
+NumberwangAudioProcessor::NumberwangAudioProcessor()
     : AudioProcessor(BusesProperties()
         .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
       apvts(*this, nullptr, "Parameters", createParameterLayout())
@@ -161,9 +161,9 @@ StereoWidenerAudioProcessor::StereoWidenerAudioProcessor()
     synth.addSound(new NWSound());
 }
 
-StereoWidenerAudioProcessor::~StereoWidenerAudioProcessor() {}
+NumberwangAudioProcessor::~NumberwangAudioProcessor() {}
 
-void StereoWidenerAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+void NumberwangAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     synth.setCurrentPlaybackSampleRate(sampleRate);
     keyboardState.reset();
@@ -197,14 +197,14 @@ void StereoWidenerAudioProcessor::prepareToPlay(double sampleRate, int samplesPe
     juce::ignoreUnused(samplesPerBlock);
 }
 
-void StereoWidenerAudioProcessor::releaseResources()
+void NumberwangAudioProcessor::releaseResources()
 {
     keyboardState.reset();
     heldNotes.clear();
     currentArpNote = -1;
 }
 
-void StereoWidenerAudioProcessor::advanceArpIndex()
+void NumberwangAudioProcessor::advanceArpIndex()
 {
     const int n = heldNotes.size();
     if (n <= 1) { arpIndex = 0; return; }
@@ -231,7 +231,7 @@ void StereoWidenerAudioProcessor::advanceArpIndex()
     }
 }
 
-void StereoWidenerAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
+void NumberwangAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
                                                juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
@@ -568,7 +568,7 @@ void StereoWidenerAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     buffer.applyGain(apvts.getRawParameterValue("master_volume")->load());
 }
 
-void StereoWidenerAudioProcessor::applyWidener(juce::AudioBuffer<float>& buffer,
+void NumberwangAudioProcessor::applyWidener(juce::AudioBuffer<float>& buffer,
                                                 float widthAmount)
 {
     if (buffer.getNumChannels() < 2) return;
@@ -583,7 +583,7 @@ void StereoWidenerAudioProcessor::applyWidener(juce::AudioBuffer<float>& buffer,
     }
 }
 
-void StereoWidenerAudioProcessor::applyChorus(juce::AudioBuffer<float>& buffer,
+void NumberwangAudioProcessor::applyChorus(juce::AudioBuffer<float>& buffer,
                                                float rate, float depth, float mix)
 {
     if (buffer.getNumChannels() < 2) return;
@@ -623,7 +623,7 @@ void StereoWidenerAudioProcessor::applyChorus(juce::AudioBuffer<float>& buffer,
     }
 }
 
-void StereoWidenerAudioProcessor::applyDelay(juce::AudioBuffer<float>& buffer,
+void NumberwangAudioProcessor::applyDelay(juce::AudioBuffer<float>& buffer,
                                               float timeSecs, float feedback, float mix)
 {
     if (buffer.getNumChannels() < 2) return;
@@ -650,26 +650,26 @@ void StereoWidenerAudioProcessor::applyDelay(juce::AudioBuffer<float>& buffer,
     }
 }
 
-void StereoWidenerAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
+void NumberwangAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
     auto state = apvts.copyState();
     auto xml   = state.createXml();
     copyXmlToBinary(*xml, destData);
 }
 
-void StereoWidenerAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
+void NumberwangAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
     auto xml = getXmlFromBinary(data, sizeInBytes);
     if (xml && xml->hasTagName(apvts.state.getType()))
         apvts.replaceState(juce::ValueTree::fromXml(*xml));
 }
 
-juce::AudioProcessorEditor* StereoWidenerAudioProcessor::createEditor()
+juce::AudioProcessorEditor* NumberwangAudioProcessor::createEditor()
 {
-    return new StereoWidenerAudioProcessorEditor(*this);
+    return new NumberwangAudioProcessorEditor(*this);
 }
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new StereoWidenerAudioProcessor();
+    return new NumberwangAudioProcessor();
 }

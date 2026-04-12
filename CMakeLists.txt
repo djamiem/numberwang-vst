@@ -1,12 +1,19 @@
 cmake_minimum_required(VERSION 3.22)
-project(StereoWidener VERSION 1.9.2)
+project(Numberwang VERSION 1.9.24)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# ── ccache: cache compiled objects so unchanged modules skip recompile ─────────
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set(CMAKE_C_COMPILER_LAUNCHER   "${CCACHE_PROGRAM}")
+    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+endif()
+
 add_subdirectory(JUCE)
 
-juce_add_plugin(StereoWidener
+juce_add_plugin(Numberwang
     COMPANY_NAME "Jamie"
     IS_SYNTH TRUE
     NEEDS_MIDI_INPUT TRUE
@@ -18,10 +25,10 @@ juce_add_plugin(StereoWidener
     PLUGIN_MANUFACTURER_CODE Jmcl
     PLUGIN_CODE Swid
     FORMATS VST3 Standalone
-    PRODUCT_NAME "Stereo Widener"
+    PRODUCT_NAME "Numberwang Pro"
 )
 
-juce_add_binary_data(StereoWidenerAssets
+juce_add_binary_data(NumberwangAssets
     SOURCES
         Assets/BebasNeue-Regular.ttf
         Source/UI/index.html
@@ -31,26 +38,36 @@ juce_add_binary_data(StereoWidenerAssets
         Source/UI/check_native_interop.js
 )
 
-juce_generate_juce_header(StereoWidener)
+juce_generate_juce_header(Numberwang)
 
-target_sources(StereoWidener PRIVATE
+target_sources(Numberwang PRIVATE
     Source/PluginProcessor.cpp
     Source/PluginEditor.cpp
     Source/SynthVoice.h
 )
 
-target_compile_definitions(StereoWidener PUBLIC
+# ── Dev UI: serve HTML/CSS/JS from disk so changes don't need a rebuild ───────
+# Enable with:  cmake -B build -DNUMBERWANG_DEV_UI=ON   (or run ./dev.sh)
+# Disable with: cmake -B build -DNUMBERWANG_DEV_UI=OFF  (or run ./build.sh)
+option(NUMBERWANG_DEV_UI "Serve UI files from Source/UI/ on disk (standalone hot-reload)" OFF)
+
+target_compile_definitions(Numberwang PUBLIC
     JUCE_WEB_BROWSER=1
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
 )
 
-target_link_libraries(StereoWidener
+if(NUMBERWANG_DEV_UI)
+    target_compile_definitions(Numberwang PRIVATE NUMBERWANG_DEV_UI=1)
+    message(STATUS "Dev UI mode ON — UI files served from Source/UI/ on disk")
+endif()
+
+target_link_libraries(Numberwang
     PRIVATE
         juce::juce_audio_utils
         juce::juce_dsp
         juce::juce_gui_extra
-        StereoWidenerAssets
+        NumberwangAssets
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags

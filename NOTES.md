@@ -1,4 +1,44 @@
-# Stereo Widener VST — Dev Notes
+# Numberwang Pro VST — Dev Notes
+
+## 2026-04-12 — Super Saw level → inline knob next to ON button (v1.9.22)
+
+Moved ssaw_level from a separate slider row into an xs rotary knob beside the ON toggle; saves one row height so SPREAD is no longer clipped.
+
+## 2026-04-12 — Stack OSC 1/2, window 800→840px to fix super saw clip (v1.9.20)
+
+OSC 1 and OSC 2 changed from side-by-side 2-column grid to vertically stacked with a gold divider; window height increased 800→840px so super saw section (and its SPREAD row) is fully visible.
+
+## 2026-04-12 — Font upgrade, scoreboard height, accessibility pass (v1.9.18)
+
+Switched UI font from BebasNeue to Avenir Next (sophisticated, readable geometric sans on macOS); BebasNeue kept only for NUMBERWANG! banner title. Scoreboard height raised to 108px so vol knob and OCT controls are fully visible. Bumped font sizes throughout (section titles 13px, labels/values 12px), reduced excessive letter-spacing, raised all text opacities to 0.88–0.92, increased slider track/thumb and toggle sizes for better accessibility.
+
+## 2026-04-12 — Scoreboard right fix, ADSR horizontal row, Super Saw to col 2 (v1.9.16)
+
+Added missing CSS for score-right/oct-btn-sm/knob-svg--xs so vol knob and octave controls render correctly; bumped scoreboard height to 84px; ADSR knobs changed from 2×2 grid to single 4-knob horizontal row; Super Saw moved from column 3 to bottom of column 2.
+
+## 2026-04-12 — Fix duplicate oct IDs + missing master_volume knob setup (v1.9.14)
+
+Removed redundant "KEYBOARD OCTAVE" section from column 2 (oct controls moved to scoreboard); added setupKnob("master_volume") so the VOL knob SVG is interactive.
+
+## 2026-04-12 — Fix OS beep on key hold (v1.9.7)
+
+Call preventDefault() before the ev.repeat early-return so held keys don't trigger macOS system beep.
+
+## 2026-04-12 — ADSR row layout + keyboard beep fix (v1.9.6)
+
+Converted ENVELOPE from broken column-flex knob layout to standard rows (ATK/DECAY/SUSTAIN/REL); added e.preventDefault() to all handled keydown events to stop OS beep.
+
+## 2026-04-12 — QWERTY keyboard + ADSR fix (v1.9.5)
+
+Fixed ADSR sliders invisible in column-flex context (flex:none override on .adsr-knob input); ported QWERTY→MIDI, z/x octave shift, and spacebar arp-hold from the old C++ editor to JS/native functions (noteOn, noteOff).
+
+## 2026-04-12 — 3-column layout + rename to Numberwang Pro (v1.9.4)
+
+Switched UI from 2 columns to 3 (Sources / Modulation / FX) at 1200×800 to fix viewport clipping; renamed product from "Stereo Widener" to "Numberwang Pro" throughout.
+
+## 2026-04-12 — Desktop symlink update (v1.9.3)
+
+Rebuilt after renaming project folder to `numberwang-vst`; updated Desktop symlink to "Numberwang Pro".
 
 ## 2026-04-11 — HTML/WebView UI (v1.9.2)
 
@@ -212,3 +252,47 @@ Replaced the native JUCE C++ editor with a WebBrowserComponent-based HTML/CSS/JS
 
 ### Numberwang
 - Still detected and flagged each beat (for UI display), but no longer gates the filter
+
+## 2026-04-12 — ADSR + filter rotary knobs, viewport fill, remove yellow envelope (v1.9.9)
+
+ADSR + filter rotary knobs, viewport fill, remove yellow envelope
+
+## 2026-04-12 — Rename StereoWidener → Numberwang throughout C++ and cmake (v1.9.10)
+
+Rename StereoWidener → Numberwang throughout C++ and cmake
+
+## 2026-04-12 — Accessibility: larger knobs/text, raise dim text opacity, danger color to orange for color-blind users (v1.9.11)
+
+Accessibility: larger knobs/text, raise dim text opacity, danger color to orange for color-blind users
+
+## 2026-04-12 — Add ccache + parallel jobs; prime cache for fast incremental builds (v1.9.12)
+
+Add ccache + parallel jobs; prime cache for fast incremental builds
+
+## 2026-04-12 — Verify ccache hit rate on second build (v1.9.13)
+
+Verify ccache hit rate on second build
+
+## 2026-04-12 — Auto build bump (v1.9.15)
+
+Auto build bump
+
+## 2026-04-12 — Auto build bump (v1.9.17)
+
+Auto build bump
+
+## 2026-04-12 — Auto build bump (v1.9.19)
+
+Auto build bump
+
+## 2026-04-12 — Auto build bump (v1.9.21)
+
+Auto build bump
+
+## 2026-04-12 — Auto build bump (v1.9.23)
+
+Auto build bump
+
+## 2026-04-12 — WebView UI overhaul: rotary knobs, Avenir Next font, 3-column layout, stacked OSCs, super saw knob panel, dev hot-reload mode (v1.9.24)
+
+WebView UI overhaul: rotary knobs, Avenir Next font, 3-column layout, stacked OSCs, super saw knob panel, dev hot-reload mode
