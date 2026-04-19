@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(Numberwang VERSION 1.9.24)
+project(Numberwang VERSION 1.9.27)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,7 +24,7 @@ juce_add_plugin(Numberwang
     VST3_COPY_DIR "/Users/jamiemichalski/Desktop/DSKTP/C Drive/vst3"
     PLUGIN_MANUFACTURER_CODE Jmcl
     PLUGIN_CODE Swid
-    FORMATS VST3 Standalone
+    FORMATS AU VST3 Standalone
     PRODUCT_NAME "Numberwang Pro"
 )
 

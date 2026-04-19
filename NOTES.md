@@ -1,5 +1,9 @@
 # Numberwang Pro VST — Dev Notes
 
+## 2026-04-19 — Add AU format for Logic Pro compatibility (v1.9.25)
+
+Added `AU` to FORMATS in CMakeLists.txt so the plugin builds as an Audio Unit alongside VST3; Logic Pro on Mac only loads AU plugins.
+
 ## 2026-04-12 — Super Saw level → inline knob next to ON button (v1.9.22)
 
 Moved ssaw_level from a separate slider row into an xs rotary knob beside the ON toggle; saves one row height so SPREAD is no longer clipped.
@@ -296,3 +300,11 @@ Auto build bump
 ## 2026-04-12 — WebView UI overhaul: rotary knobs, Avenir Next font, 3-column layout, stacked OSCs, super saw knob panel, dev hot-reload mode (v1.9.24)
 
 WebView UI overhaul: rotary knobs, Avenir Next font, 3-column layout, stacked OSCs, super saw knob panel, dev hot-reload mode
+
+## 2026-04-19 — Auto build bump (v1.9.26)
+
+Auto build bump
+
+## 2026-04-19 — Auto build bump (v1.9.27)
+
+Auto build bump
