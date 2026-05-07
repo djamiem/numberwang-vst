@@ -13,6 +13,17 @@ endif()
 
 add_subdirectory(JUCE)
 
+if(APPLE)
+    set(NUMBERWANG_FORMATS AU VST3 Standalone)
+    set(NUMBERWANG_VST3_COPY_DIR "/Users/jamiemichalski/Desktop/DSKTP/C Drive/vst3")
+elseif(WIN32)
+    set(NUMBERWANG_FORMATS VST3 Standalone)
+    set(NUMBERWANG_VST3_COPY_DIR "C:/Program Files/Common Files/VST3")
+else()
+    set(NUMBERWANG_FORMATS VST3 Standalone)
+    set(NUMBERWANG_VST3_COPY_DIR "")
+endif()
+
 juce_add_plugin(Numberwang
     COMPANY_NAME "Jamie"
     IS_SYNTH TRUE
@@ -21,11 +32,12 @@ juce_add_plugin(Numberwang
     IS_MIDI_EFFECT FALSE
     EDITOR_WANTS_KEYBOARD_FOCUS TRUE
     COPY_PLUGIN_AFTER_BUILD TRUE
-    VST3_COPY_DIR "/Users/jamiemichalski/Desktop/DSKTP/C Drive/vst3"
+    VST3_COPY_DIR "${NUMBERWANG_VST3_COPY_DIR}"
     PLUGIN_MANUFACTURER_CODE Jmcl
     PLUGIN_CODE Swid
-    FORMATS AU VST3 Standalone
+    FORMATS ${NUMBERWANG_FORMATS}
     PRODUCT_NAME "Numberwang Pro"
+    NEEDS_WEBVIEW2 TRUE
 )
 
 juce_add_binary_data(NumberwangAssets
@@ -56,6 +68,10 @@ target_compile_definitions(Numberwang PUBLIC
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
 )
+
+if(WIN32)
+    target_compile_definitions(Numberwang PUBLIC JUCE_USE_WIN_WEBVIEW2=1)
+endif()
 
 if(NUMBERWANG_DEV_UI)
     target_compile_definitions(Numberwang PRIVATE NUMBERWANG_DEV_UI=1)
