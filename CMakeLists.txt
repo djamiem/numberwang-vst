@@ -70,7 +70,7 @@ target_compile_definitions(Numberwang PUBLIC
 )
 
 if(WIN32)
-    target_compile_definitions(Numberwang PUBLIC JUCE_USE_WIN_WEBVIEW2=1)
+    target_compile_definitions(Numberwang PUBLIC JUCE_USE_WIN_WEBVIEW2_WITH_STATIC_LINKING=1)
 endif()
 
 if(NUMBERWANG_DEV_UI)
